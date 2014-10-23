@@ -1,0 +1,200 @@
+<!doctype html>
+<html>
+    <head>
+        <title>windows</title>
+
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script src="js/jquery.windows.js"></script>
+        <link rel="stylesheet" href="css/main.css">
+        <link rel="stylesheet" href="css/slider.css">
+
+    </head>
+    <body>
+
+        <!-- NOTE: each "window" is a section element with class .window -->
+
+        <section id="0" class="window">
+            <div class="content">
+                    <h1>JQuery</h1>
+                    <h2>A few small JQuery protoypes</h2>
+
+            </div>
+        </section>
+
+        <section id="1" class="window">
+
+            <div class="content">
+            	<div class="left">
+	                <h2>JQuery Accordian</h2>
+	                <div class="explanation">Developed as a protoype for DOM child traversal
+	                    <ul>
+	                        <li>- Divided into "dt" and "dd" list elements</li>
+	                        <li>- Utilises JQuery slideToggle function to slide elements up </li>
+	                    </ul>
+                        Built around the JQuery mouseEnter event for toggling between elements sliding up and down. The accordian can be ysed for side menu tabs and hidding DOM elements.
+	                </div>
+                </div>
+            </div>
+
+            <div class="content">
+	            <div class="right">
+	                <div class = "acc">
+
+	                    <dl>
+							<dt>What are your hours?</dt>
+							<dd>We are open 24/7.</dd>
+							<dt>What are your hours?</dt>
+							<dd>We are open 24/7.</dd>
+							<dt>What are your hours?</dt>
+							<dd>We are open 24/7.</dd>
+							<dt>What are your hours?</dt>
+							<dd>We are open 24/7.</dd>
+							<dt>What are your hours?</dt>
+							<dd>We are open 24/7.</dd>
+						</dl>
+					</div>
+				</div>
+            </div>
+        </section>
+
+        <section id="2" class="window">
+            <div class="content">
+				<div class="slider">
+					<ul>
+						<li><img src="img/img1.gif" alt="image"></li>
+						<li><img src="img/img2.gif" alt="image"></li>
+						<li><img src="img/img3.gif" alt="image"></li>
+						<li><img src="img/img4.gif" alt="image"></li>
+					</ul>
+				</div>
+
+				<div id="slider-nav">
+					<button data-dir="prev">Previous</button>
+					<button data-dir="next">Next</button>
+				</div>
+            </div>
+
+            <div class="content">
+            	<div class="right">
+	                <h2>Onligatory Slider</h2>
+	                <div class="explanation">An image slider tied to previous and next buttons.
+	                    <ul>
+	                        <li>- Moves the margin using the JQuery Animate function</li>
+	                        <li>- Two naviagtion buttons assigned for moving positions back and forth</li>
+	                    </ul>
+	                    The slider acts as a container and is not restricted to images, but be also used with any element.
+	                </div>
+                </div>
+            </div>
+
+        </section>
+
+        <section id="3" class="window">
+
+
+            <div class="content">
+                <div class="left">
+                    <h2>Javascript Calculator</h2>
+                    <div class="explanation">A small CSS calculator prototype built in Javascript
+                        <ul>
+                            <li>- Uses basic css for coloring and shading </li>
+                            <li>- A series of buttons assigned span values, each listwing to the onclick event </li>
+                        </ul>
+                        Built as a javascipt assignment, to familiarise myself with javascript and css syntax, works as a fully functioning calculator.
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="right">
+                <div id="calculator">
+                    <!-- Screen and clear key -->
+                    <div class="top">
+                        <span class="clear">C</span>
+                        <div class="screen"></div>
+                    </div>
+                    
+                    <div class="keys">
+                        <!-- operators and other keys -->
+                        <span>7</span>
+                        <span>8</span>
+                        <span>9</span>
+                        <span class="operator">+</span>
+                        <span>4</span>
+                        <span>5</span>
+                        <span>6</span>
+                        <span class="operator">-</span>
+                        <span>1</span>
+                        <span>2</span>
+                        <span>3</span>
+                        <span class="operator">÷</span>
+                        <span>0</span>
+                        <span>.</span>
+                        <span class="eval">=</span>
+                        <span class="operator">x</span>
+                    </div>
+                </div>
+            </div>
+
+        	
+        </section>
+
+        <section id="4" class="window">
+            <div class="content">
+                <a href="https://github.com/KarlRoe/windows" title="Download Me!" id="btn-wrap">
+                    <span class="title">Download Me</span>
+                    <div id="info">
+                        <p>
+                            <strong>JQuery /</strong>
+                            <span>Prototypes</span>
+                        </p>
+                    </div>
+                </a>
+
+            </div>
+        </section>
+
+        <script src="js/slider.js"></script>
+        <script src="js/index.js" type="text/javascript"</script>
+        <script src="http://thecodeplayer.com/uploads/js/prefixfree-1.0.7.js" type="text/javascript" type="text/javascript"></script>
+
+        <script>
+
+            $(document).ready(function(){
+
+                var $windows = $('.window');
+
+                $windows.windows({
+                    snapping: true,
+                    snapSpeed: 500,
+                    snapInterval: 1100,
+                    onScroll: function(s){},
+                    onSnapComplete: function($el){},
+                    onWindowEnter: function($el){}
+                });
+				
+				$('dd').filter(':nth-child(n+4)').addClass('hide');
+
+				$('dl').on('mouseenter', 'dt', function() {
+					$(this)
+						.next()
+							.slideDown(200)
+							.siblings('dd')
+								.slideUp(200);
+				});
+
+				var container = $('div.slider').css('overflow', 'hidden').children('ul'),
+					slider = new Slider( container, $('#slider-nav') );
+
+				slider.nav.find('button').on('click', function() {
+					slider.setCurrent( $(this).data('dir') );
+					slider.transition();
+				});	
+
+
+			})();
+
+        </script>
+
+    </body>
+</html>

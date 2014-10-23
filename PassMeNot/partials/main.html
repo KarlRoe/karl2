@@ -1,0 +1,139 @@
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+			<div class="page-header">
+				<h1>PassMeNot <small>Just Another Final Grade Calculator</small></h1>
+			</div>
+            <div>
+				<div class="row" style="margin-top: 20px;">
+					<div class="col-md-4">
+						<tiles class-name="form-box" animation="flip" toggle="toggle">
+							<tile toggle="toggle">
+								<form ng-if="!sharedGrades" class="form-horizontal add-subject" role="form" name="addSubject" ng-submit="add();addSubject.$setPristine()" novalidate>
+									<div class="form-group" ng-class="{ 'has-error' : addSubject.name.$invalid && !addSubject.name.$pristine }">
+										<div class="col-sm-12">
+											<input id="name" type="text" name="name" placeholder="Module Name" ng-model="subject.name" class="form-control" required />
+										</div>
+
+									</div>
+									<div class="form-group" ng-class="{ 'has-error' : addSubject.caWeight.$invalid && !addSubject.caWeight.$pristine }">
+										<div class="col-sm-12">
+											<input id="caWeight" type="number" name="caWeight" class="form-control" placeholder="CA Weight (%)" ng-model="subject.caWeight" min="0" max="99" required  />
+											<span ng-show="addSubject.caWeight.$error.max" class="help-block">Weight too large.</span>
+											<span ng-show="addSubject.caWeight.$error.min" class="help-block">Weight too small.</span>
+										</div>
+									</div>
+									<div class="form-group" ng-class="{ 'has-error' : addSubject.caMark.$invalid && !addSubject.caMark.$pristine }">
+										<div class="col-sm-12">
+											<div class="input-group">
+												<input id="caMark" type="number" name="caMark" class="form-control" placeholder="CA Mark (%)" ng-model="subject.caMark" min="0" max="100" required ca-mark-validate ca-weight="subject.caWeight" out-of-weight="subject.outOfWeight" />
+												<span class="input-group-addon">
+													<input type="checkbox" ng-model="subject.outOfWeight">
+												</span>
+											</div>
+											<span ng-show="addSubject.caMark.$error.max" class="help-block">Percentage too large</span>
+											<span ng-show="addSubject.caMark.$error.min" class="help-block">Percentage too small</span>
+											<span ng-show="addSubject.caMark.$error.maxMark" class="help-block">CA Mark must be less than CA Weight</span>
+										</div>
+									</div>
+									<div class="form-group">
+										<div class="col-sm-12">
+											<button type="submit" class="btn btn-success btn-block" ng-disabled="addSubject.$invalid">Add Subject <span><i class="fa fa-plus"></i></span></button>
+										</div>
+									</div>
+									<div class="form-group">
+										<div class="col-sm-12">
+											<button type="button" class="btn btn-info btn-block" ng-disabled="subjects == 0" ng-click="toggle(1)">Share <span><i class="fa fa-share"></i></span></button>
+										</div>
+									</div>
+								</form>
+								<form ng-if="sharedGrades" class="form-horizontal" role="form" ng-submit="backToResults()" novalidate>
+									<div class="form-group">
+										<div class="col-sm-12">
+											<button type="submit" class="btn btn-info btn-block">Your Results <span><i class="fa fa-arrow-circle-left"></i></span></button>
+										</div>
+									</div>
+								</form>
+							</tile>
+							<tile toggle="toggle">
+								<div class="share">
+									<h3>Share your results:</h3>
+									<pre>{{shareUrl()}}</pre>
+									<form class="form-horizontal" role="form" ng-submit="" novalidate>
+										<div class="form-group">
+											<div class="col-sm-12">
+												<button type="button" class="btn btn-warning btn-block" ng-click="toggle(0)">Back <span><i class="fa fa-arrow-circle-left"></i></span></button>
+											</div>
+										</div>
+									</form>
+								</div>
+							</tile>
+						</tiles>
+					</div>
+					<div class="col-md-8">
+						<hr class="visible-xs visible-sm">
+						<ul class="list-unstyled subjects">
+							<li ng-if="subjects.length == 0">
+								<h1>No Entries found</h1>
+								<p class="visible-lg">Use the input form on the left-hand side</p>
+								<p class="hidden-lg">Use the input form above</p>
+							</li>
+							<li ng-repeat="subject in subjects">
+								<div class="row">
+									<div class="col-lg-12">
+										<h1><strong>{{subject.name}}</strong>
+                                            <a href="javascript:void(0)" ng-if="!sharedGrades" class="pull-right text-danger" ng-click="remove(subject.name)"><i class="fa fa-times"></i></a>
+                                            <a href="javascript:void(0)" ng-if="sharedGrades" class="pull-right text-success" was-shared="" ng-click="addFromShare(subject)"><i class="fa fa-plus"></i></a>
+                                        </h1>
+										<div class="row">
+											<div class="col-lg-4">
+												<div class="row text-center">
+													<div class="col-md-6">
+                                                        <h5><small>CA Weight</small></h5>
+														<div class="box">
+															{{subject.caWeight}}
+														</div>
+													</div>
+													<div class="col-md-6">
+                                                        <h5><small>CA Grade</small></h5>
+														<div class="box">
+														    {{subject.caMark}}
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="col-lg-8">
+												<table class="table text-center">
+													<tr>
+														<th ng-if="aims.length == 0"></th>
+														<th ng-repeat="aim in aims | orderBy:identity" class="text-center">{{aim}}% <a href="#" ng-if="!sharedGrades" ng-click="removeAim(aim)"><i class="fa fa-trash-o text-danger"></i></a></th>
+														<th ng-if="!acceptsMoreAims() && !sharedGrades">
+															<form name="addAimForm" ng-submit="addAim();newAim=''">
+																<div class="input-group aim" ng-class="{ 'has-error' : addAimForm.newAim.$invalid && !addAimForm.newAim.$pristine }">
+																	<input name="newAim" type="number" min="1" max="100" class="form-control input-sm aim" ng-model="newAim" required>
+																	<span class="input-group-addon aim">
+                                                                        <a href="#" ng-click="addAim();newAim=''"><i class="fa fa-plus"></i></a>
+                                                                    </span>
+																</div>
+															</form>
+														</th>
+													</tr>
+													<tr>
+                                                        <td ng-if="aims.length == 0 && sharedGrades"><p>There are no Aims defined for these grades.</p></td>
+														<td ng-if="aims.length == 0 && !sharedGrades"><p>You have not defined any Aims</p></td>
+														<td ng-repeat="aim in aims | orderBy:identity">{{calculateExamMark(aim, subject)}} %</td>
+														<td ng-if="!acceptsMoreAims() && !sharedGrades"></td>
+													</tr>
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+            </div>
+        </div>
+    </div>
+</div> 
